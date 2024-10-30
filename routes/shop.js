@@ -9,9 +9,11 @@ const rootDir = require('../utils/path')
 
 
 Routing.get('/',(req,res,next)=>{
-  console.log("In the middlware 2")
-  console.log(adminData.db)
-  res.sendFile(path.join(rootDir, 'views', 'myShop.html'))
+  //res.sendFile(path.join(rootDir, 'views', 'myShop.html'))
+  const data = adminData.db
+  res.render('shop', {data:data, docTitle:"Shop",path:'/',activeShop:true,productCSS:true,hasProducts: data.length>0})
+
+
 })
 
 module.exports = Routing
