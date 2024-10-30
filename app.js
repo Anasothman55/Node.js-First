@@ -19,7 +19,7 @@ app.use(bodyuParser.urlencoded({extended: false}))
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/admin',adminRouts)
+app.use('/admin', adminRouts.routing)
 app.use(userRouts)
 
 app.use((req,res,next)=>{
