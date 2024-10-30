@@ -1,0 +1,7 @@
+first_node@1.0.0 D:\Course\Node-js\code\first_node
+├── body-parser@1.20.3
+├── ejs@3.1.10
+├── express-handlebars@8.0.1
+├── express@4.21.1
+├── nodemon@3.1.7
+└── pug@3.0.3
