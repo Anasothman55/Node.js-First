@@ -1,7 +1,7 @@
 const db = require('../models/product.js')
 
 exports.getAddProduct= (req,res,next)=>{
-  res.render('add-product', {docTitle:"Add product", path:'/admin/add-product'})
+  res.render('./admin/add-product', {docTitle:"Add product", path:'/admin/add-product'})
 }
 
 exports.postAddProduct = (req,res,next)=>{
@@ -12,6 +12,6 @@ exports.postAddProduct = (req,res,next)=>{
 
 exports.getProduct = (req,res,next)=>{
   db.fetchAll((data)=>{
-    res.render('shop', {data:data, docTitle:"Shop",path:'/'})
+    res.render('./shop/shop', {data:data, docTitle:"Shop",path:'/'})
   })
 }

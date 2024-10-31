@@ -1,46 +1,32 @@
 const fs = require('fs');
 const path = require('path');
 
+const p = path.join(__dirname, '..', 'data', 'product.json');
+
+const getHelperFunction = cb =>{
+  fs.readFile(p, (err, fileContent) => {
+    if (err) {
+      return cb([]);
+    }else{
+      cb(JSON.parse(fileContent));
+    }
+  });
+}
 module.exports = class {
   constructor(title) {
     this.title = title;
   }
   save() {
-    const p = path.join(__dirname, '..', 'data', 'product.json');
-    fs.readFile(p, (err, fileContent) => {
-      let products = [];
-      if (!err) {
-        try {
-          products = JSON.parse(fileContent);
-        } catch (parseErr) {
-          console.log('Failed to parse JSON:', parseErr);
+    getHelperFunction(product =>{
+      product.push(this)
+      fs.writeFile(p, JSON.stringify(product), (writeErr) => {
+        if (writeErr) {
+          console.log('Failed to save product:', writeErr);
         }
-      }
-      products.push(this);
-      fs.mkdir(path.join(__dirname, '..', 'data'), { recursive: true }, (mkdirErr) => {
-        if (mkdirErr) {
-          return console.log('Failed to create data folder:', mkdirErr);
-        }
-        fs.writeFile(p, JSON.stringify(products), (writeErr) => {
-          if (writeErr) {
-            console.log('Failed to save product:', writeErr);
-          }
-        });
       });
-    });
+    })
   }
   static fetchAll(cb) {
-    const p = path.join(__dirname, '..', 'data', 'product.json');
-    fs.readFile(p, (err, fileContent) => {
-      if (err) {
-        return cb([]);
-      }
-      try {
-        cb(JSON.parse(fileContent));
-      } catch (parseErr) {
-        console.log('Failed to parse JSON:', parseErr);
-        cb([]);
-      }
-    });
+    getHelperFunction(cb)
   }
 };
