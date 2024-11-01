@@ -13,8 +13,11 @@ const getHelperFunction = cb =>{
   });
 }
 module.exports = class {
-  constructor(title) {
+  constructor(title,imageUrl, description, price) {
     this.title = title;
+    this.imageUrl = imageUrl
+    this.description = description
+    this.price = price
   }
   save() {
     getHelperFunction(product =>{
