@@ -21,16 +21,15 @@
                 <p class="product__description"><%= dts.description %></p>
               </div>
               <div class="card__actions">
-                <form action="/add-to-cart" method="POST">
-                  <button class="btn">Add to Cart</button>
-                </form>
+                <a class="btn" href="/product/<%= dts.id %>">Details</a>
+                <%- include('../includes/addToCart.ejs', { data: dts }) %>
               </div>
             </article>
           <% } %>
         </div>
-
       <% } else { %>
         <h1>No Product Found</h1>
       <% } %>
   </main>
 <%- include('../includes/end.ejs') %>
+

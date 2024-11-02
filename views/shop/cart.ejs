@@ -3,5 +3,19 @@
 </head>
 <body>
   <%- include('../includes/navigation.ejs') %>
-  <h1>the cart</h1>
+  <% if(product.length > 0) { %>
+    <ul>
+      <% product.forEach(p=>{  %>
+        <li>
+          <p><%= p.productData.title%> (<%= p.qty %>)</p>
+          <form action="/caer-delete-item" method="POST">
+            <input type="hidden" name="productId" value="<%= p.productData.id %>" />
+            <button type="submit" class="btn">Delete</button>
+          </form>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else {%>
+    <h1>No Product in Cart</h1>
+  <% } %>
 <%- include('../includes/end.ejs') %>
