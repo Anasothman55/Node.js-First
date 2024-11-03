@@ -2,23 +2,28 @@ const db = require('../models/product.js')
 const Cartdb = require('../models/cart.js')
 
 exports.getIndex= (req,res,next)=>{
-  db.fetchAll((data)=>{
-    res.render('./shop/index', {data:data, docTitle:"Shopfiy",path:'/'})
+  db.fetchAll()
+  .then(([rows,fieldData])=>{
+    res.render('./shop/index', {data:rows, docTitle:"Shopfiy",path:'/'})
   })
+  .catch(err=>console.log(err))
 }
 
 exports.getProduct = (req,res,next)=>{
-  
-  db.fetchAll((data)=>{
-    res.render('./shop/shop', {data:data, docTitle:"Product",path:'/product'})
-  })
+  db.fetchAll()
+    .then(([rows,fieldData])=>{
+      res.render('./shop/shop', {data:rows, docTitle:"Product",path:'/product'})
+    })
+    .catch(err=>console.log(err))
 }
 
 exports.getOneProduct = (req,res,next)=>{
   const proId = parseInt(req.params.id)
-  db.fideById(proId, product=>{
-    res.render('./shop/product-detail', { data:product,docTitle:"product-detail",path:'/product-detail'})
-  })
+  db.findById(proId)
+    .then(([rows,feildData])=>{
+      res.render('./shop/product-detail', { data:rows[0],docTitle:"product-detail",path:'/product-detail'})
+    })
+    .catch(err=>console.log(err))
 }
 
 exports.getCart = (req,res,next)=>{

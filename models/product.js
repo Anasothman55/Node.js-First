@@ -1,18 +1,6 @@
-const fs = require('fs');
-const path = require('path');
 
-const Cart = require('./cart')
-const p = path.join(__dirname, '..', 'data', 'product.json');
+const db = require('../utils/database')
 
-const getHelperFunction = cb =>{
-  fs.readFile(p, (err, fileContent) => {
-    if (err) {
-      return cb([]);
-    }else{
-      cb(JSON.parse(fileContent));
-    }
-  });
-}
 module.exports = class {
   constructor(id,title,imageUrl, description, price) {
     this.id = id
@@ -22,43 +10,17 @@ module.exports = class {
     this.price = price
   }
   save() {
-    getHelperFunction(product =>{
-      if(this.id){
-        const existingProductIndex = product.findIndex(p =>  p.id === this.id);
-        const updateProduct = [...product]
-        updateProduct[existingProductIndex] = this
-        fs.writeFile(p, JSON.stringify(updateProduct), (writeErr) => {
-          console.log(writeErr)
-        });
-      }else{
-        this.id = Math.floor(Math.random() * 1000000000 + 1)
-        product.push(this)
-        fs.writeFile(p, JSON.stringify(product), (writeErr) => {
-          if (writeErr) {
-            console.log('Failed to save product:', writeErr);
-          }
-        });
-      }
-    })
+    const query = `INSERT INTO products (title, price, description, imageUrl) VALUES (?, ?, ?, ?)`;
+    const values = [this.title, this.price, this.description, this.imageUrl];
+    return db.execute(query, values)
   }
-  static delete(id){
-    getHelperFunction(products=>{
-      const product = products.find(pro => pro.id === id)
-      const productFiltter = products.filter(prod => prod.id !== id)
-      fs.writeFile(p, JSON.stringify(productFiltter), (writeErr) => {
-        if (!writeErr) {
-          Cart.deleteProduct(id,product.price)
-        }
-      });
-    })
+  static delete(proId){
+    return db.execute(`DELETE FROM products WHERE id = ?`,[proId])
   }
-  static fetchAll(cb) {
-    getHelperFunction(cb)
+  static fetchAll() {
+    return db.execute("SELECT * FROM products")
   }
-  static fideById(id,cd){
-    getHelperFunction(products=>{
-      const product = products.find(p => p.id === id)
-      cd(product)
-    });
+  static findById(proId){
+    return db.execute("SELECT * FROM products WHERE id = ?",[proId])
   }
 };

@@ -43,18 +43,22 @@ exports.postEditProduct = (req,res,next)=>{
   const imageUrl = req.body.imageUrl
 
   const updatedbs = new db(proId,title,imageUrl,description,price)
-  updatedbs.save()
-  res.redirect('/admin/product')
+  updatedbs.save().then(()=>{
+    res.redirect('/admin/product')
+  })
+  .catch(err=>{console.log(err)})
 }
 
 exports.deleteProduct = (req,res,next)=>{
   const proId = parseInt(req.body.id)
   db.delete(proId)
-  res.redirect('/admin/product')
+    .then(([rows,feildData])=>{res.redirect('/admin/product')})
+    .catch(err=>console.log(err))
 }
 
 exports.getAllProduct= (req,res,next)=>{
-  db.fetchAll((data)=>{
-    res.render('./admin/product-list', {data:data, docTitle:"Product",path:'/admin/product'})
-  })
+  db.fetchAll()
+    .then(([rows,fieldData])=>{
+      res.render('./admin/product-list', {data:rows, docTitle:"Product",path:'/admin/product'})
+    })
 }

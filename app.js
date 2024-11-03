@@ -1,8 +1,3 @@
-//const http = require('http');
-//const routes = require('./routesfile.js')
-//const server = http.createServer(routes.handler)
-//server.listen(3000);
-
 
 const express = require('express')
 const bodyuParser = require('body-parser')
@@ -10,6 +5,7 @@ const path = require('path')
 
 const app = express();
 
+const db = require('./utils/database.js')
 
 app.set('view engine', 'ejs')
 app.set('views', 'views');
@@ -17,7 +13,6 @@ app.set('views', 'views');
 const adminRouts = require('./routes/admin.js')
 const  userRouts = require('./routes/shop.js')
 const get404 = require('./controllers/404.js')
-
 
 app.use(bodyuParser.urlencoded({extended: false}))
 app.use(express.static(path.join(__dirname, 'public')));
