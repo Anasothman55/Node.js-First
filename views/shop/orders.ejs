@@ -3,5 +3,22 @@
 </head>
 <body>
   <%- include('../includes/navigation.ejs') %>
-  <h1>Nothing there</h1>
+  <main>
+    <% if(orders.length<=0) { %>
+      <h1>no Order added</h1>
+    <% }else{%>
+      <ul>
+        <% orders.forEach(order=>{%>
+          <li>
+            <h1><%= order.id %></h1>
+            <ul>
+              <% order.products.forEach(Item=>{%>
+                <li><%= Item.title %> (<%= Item.orderItem.quantity %>)</li>
+              <% }) %>
+            </ul>
+          </li>
+        <% }) %>
+      </ul>
+    <%}%>
+  </main>
 <%- include('../includes/end.ejs') %>

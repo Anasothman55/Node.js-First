@@ -1,5 +1,4 @@
 const express = require('express')
-const path = require('path')
 const Routing = express.Router() 
 
 const productControllers = require('../controllers/admin.js')
