@@ -25,7 +25,7 @@
                 <p class="product__description"><%= dts.description %></p>
               </div>
               <div class="card__actions">
-                <a class="btn" href="/product/<%= dts.id %>">Details</a>
+                <a class="btn" href="/product/<%= dts._id %>">Details</a>
                 <%- include('../includes/addToCart.ejs', { data: dts }) %>
               </div>
             </article>

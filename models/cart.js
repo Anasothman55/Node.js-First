@@ -1,16 +1,10 @@
-const {Sequelize,DataTypes, Model} = require('sequelize');
-const sequelize = require('../utils/database')
-
-const Cart =  sequelize.define(
-  'cart',
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true
-    }
+import { getDB } from "../utils/database"
+import { ObjectId } from "mongodb"
+class Cart{
+  constructor(){
+    
   }
-)
+}
 
-module.exports = Cart
+
+export default Cart

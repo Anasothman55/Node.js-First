@@ -13,4 +13,4 @@ const Order =  sequelize.define(
   }
 )
 
-module.exports = Order
+export default Order

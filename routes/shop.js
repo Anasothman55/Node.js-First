@@ -1,19 +1,16 @@
-const express = require('express')
-const Routing = express.Router() 
+import express from 'express';
+import * as shopControllers from '../controllers/shop.js';
 
-const shopRouts = require('../controllers/shop.js')
-const { routing } = require('./admin.js')
+const router = express.Router();
 
+router.get('/', shopControllers.getIndex)
+router.get('/product', shopControllers.getProduct)
+router.get('/product/:id', shopControllers.getOneProduct)
+router.get('/cart', shopControllers.getCart)
+router.post('/cart', shopControllers.postToCart)
+router.post('/caer-delete-item', shopControllers.postDeleteCartItem )
+router.post('/crate-order', shopControllers.postOrder)
+router.get('/checkout', shopControllers.getCheckout)
+router.get('/orders', shopControllers.getOrder)
 
-Routing.get('/', shopRouts.getIndex)
-Routing.get('/product', shopRouts.getProduct)
-Routing.get('/product/:id', shopRouts.getOneProduct)
-Routing.get('/cart', shopRouts.getCart)
-Routing.post('/cart', shopRouts.postToCart)
-Routing.post('/caer-delete-item', shopRouts.postDeleteCartItem )
-Routing.post('/crate-order', shopRouts.postOrder)
-Routing.get('/checkout', shopRouts.getCheckout)
-Routing.get('/orders', shopRouts.getOrder)
-
-
-module.exports = Routing
+export default router;
