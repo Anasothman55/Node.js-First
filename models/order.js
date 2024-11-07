@@ -1,16 +1,30 @@
-const {Sequelize,DataTypes, Model} = require('sequelize');
-const sequelize = require('../utils/database')
+import mongoose from "mongoose"
+import { Schema } from "mongoose"
 
-const Order =  sequelize.define(
-  'order',
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true
+const OrderSchema = new Schema({
+  product: [
+    {
+      productData: {
+        type: Object,
+        required: true
+      },
+      quantity: {
+        type: Number,
+        required: true
+      }
+    }
+  ],
+  user: {
+    username:{
+      type: String,
+      required: true
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      required : true,
+      ref: 'User'
     }
   }
-)
+})
 
-export default Order
+export default mongoose.model('Orders', OrderSchema)

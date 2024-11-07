@@ -1,8 +1,8 @@
-
-import Product from '../models/product.js'
+import Order from '../models/order.js'
+import ProductSchema from '../models/product.js'
 
 const getIndex= (req,res,next)=>{
-  Product.fetchAll()
+  ProductSchema.find()
   .then(data=>{
     res.render('./shop/shop', {data:data, docTitle:"Product",path:'/'})
   })
@@ -10,7 +10,7 @@ const getIndex= (req,res,next)=>{
 }
 
 const getProduct = (req,res,next)=>{
-  Product.fetchAll()
+  ProductSchema.find()
   .then(data=>{
     res.render('./shop/shop', {data:data, docTitle:"Product",path:'/product'})
   })
@@ -19,7 +19,7 @@ const getProduct = (req,res,next)=>{
 
 const getOneProduct = (req,res,next)=>{
   const proId =req.params.id
-  Product.fetchOne(proId)
+  ProductSchema.findById(proId)
   .then((data)=>{
     res.render('./shop/product-detail', { data:data,docTitle:"product-detail",path:'/product-detail'})
   })
@@ -27,8 +27,9 @@ const getOneProduct = (req,res,next)=>{
 }
 
 const getCart = (req,res,next)=>{
-  req.user.getCart()
-    .then(cart=>{
+  req.user.populate('cart.items.productId')
+    .then(user=>{
+      const cart = user.cart.items
       res.render('./shop/cart', {product:cart, docTitle:"Cart",path:'/cart'})
     })
     .catch(err=>console.log(err))
@@ -36,7 +37,7 @@ const getCart = (req,res,next)=>{
 
 const postToCart = (req,res,next)=>{
   const ids = req.body.productId
-  Product.fetchOne(ids)
+  ProductSchema.findById(ids)
     .then((products)=>{
       return req.user.addToCart(products)
     })
@@ -59,16 +60,34 @@ const postDeleteCartItem = (req,res,next)=>{
 }
 
 const getOrder = (req,res,next)=>{
-  req.user.getOrders()
+  Order.find({"user.userId": req.user._id})
     .then(orders=>{
       res.render('./shop/orders', {orders:orders, docTitle:"Orders",path:'/orders'})
     })
-    .catch(err=>console.log(err))
+    .catch(err=>{
+      console.log(err)
+    })
 }
 
 const postOrder = (req,res,next)=>{
-  req.user.addOrder()
-    .then(fetch=>{
+  req.user.populate('cart.items.productId')
+  .then(user=>{
+    const products = user.cart.items.map(i => {
+      return {quantity: i.quantity, productData: {...i.productId._doc}}
+    })
+    const order = new Order({
+      user:{
+        username: req.user.username,
+        userId: req.user
+      },
+      product: products
+    })
+    return order.save()
+  })
+    .then(result=>{
+      return req.user.OrderDeleteCart()
+    })
+    .then(()=>{
       res.redirect('/orders')
     })
     .catch(err=>console.log(err))

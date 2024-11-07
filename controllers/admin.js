@@ -1,5 +1,5 @@
 //const product = require('../models/product.js')
-import Product from '../models/product.js'
+import ProductSchema from '../models/product.js'
 
 const getAddProduct= (req,res,next)=>{
   res.render('./admin/add-product', {docTitle:"Add product", path:'/admin/add-product',editing:false})
@@ -10,7 +10,13 @@ const postAddProduct = (req,res,next)=>{
   const price = req.body.price
   const description = req.body.description
   const imageUrl = req.body.imageUrl
-  const product = new  Product(title,price,description,imageUrl,null,req.user._id)
+  const product = new  ProductSchema({
+    title:title,
+    price: price,
+    description: description,
+    imageUrl: imageUrl,
+    userId: req.user
+  })
   product.save()
   .then(result=>{
     //console.log(result)
@@ -25,7 +31,7 @@ const getEditProduct= (req,res,next)=>{
     return res.redirect('/')
   }
   const proId = req.params.id
-  Product.fetchOne(proId)
+  ProductSchema.findById(proId)
   .then((products)=>{
     const product = products
     if(!product){
@@ -50,28 +56,46 @@ const postEditProduct = (req,res,next)=>{
   const updateDescription = req.body.description
   const updateImageUrl = req.body.imageUrl
 
-  const product = new Product(updateTitle,updatePrice,updateDescription,updateImageUrl,proId)
-  product.save()
-    .then((result)=>{
-      console.log("updated")
-      res.redirect('/admin/product')
+  ProductSchema.findById(proId)
+    .then(prod=>{
+      prod.title = updateTitle
+      prod.price = updatePrice
+      prod.description= updateDescription
+      prod.imageUrl = updateImageUrl
+      return prod.save() 
     })
+      .then((result)=>{
+        console.log("updated")
+        res.redirect('/admin/product')
+      })
     .catch(err=>{console.log(err)})
 }
 
 const deleteProduct = (req,res,next)=>{
   const proId = req.body.id
-  Product.deleteById(proId)
-  .then(result=>{
-    console.log("delted")
-    res.redirect('/admin/product')
-  })
-  .catch(err=>console.log(err))
+  ProductSchema.findByIdAndDelete(proId)
+    .then(result=>{
+      if (result) {
+        console.log("Product deleted successfully");
+      } else {
+        console.log("Product not found");
+        res.status(404).send("Product not found");
+      }
+      console.log("delted")
+      res.redirect('/admin/product')
+    })
+    .catch(err=>{
+      console.log(err)
+      res.status(500).send("Server error");
+    })
 }
 
 const getAllProduct= (req,res,next)=>{
-  Product.fetchAll()
+  ProductSchema.find()
+    // .select('title price imageUrl _id')
+    // .populate('userId', 'username')
     .then((product)=>{
+      console.log(product)
       res.render('./admin/product-list', {data:product, docTitle:"Product",path:'/admin/product'})
     })
     .catch(err=>{console.log(err)})
