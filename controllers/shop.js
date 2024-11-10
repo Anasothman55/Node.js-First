@@ -3,9 +3,16 @@ import ProductSchema from '../models/product.js'
 import user from '../models/user.js'
 
 const getIndex= (req,res,next)=>{
+  const loginSuccess = req.flash('loginSuccess')[0]
+  console.log(loginSuccess)
   ProductSchema.find()
   .then(data=>{
-    res.render('./shop/shop', {data:data, docTitle:"Product",path:'/',isAuthenticated:req.session.isLoggedIn })
+    res.render('./shop/shop', {
+      data:data, 
+      docTitle:"Product",
+      path:'/',
+      loginSuccess:loginSuccess,
+    })
   })
   .catch(err=>console.log(err))
 }
@@ -13,7 +20,7 @@ const getIndex= (req,res,next)=>{
 const getProduct = (req,res,next)=>{
   ProductSchema.find()
   .then(data=>{
-    res.render('./shop/shop', {data:data, docTitle:"Product",path:'/product',isAuthenticated:req.session.isLoggedIn})
+    res.render('./shop/shop', {data:data, docTitle:"Product",path:'/product'})
   })
   .catch(err=>console.log(err))
 }
@@ -22,7 +29,7 @@ const getOneProduct = (req,res,next)=>{
   const proId =req.params.id
   ProductSchema.findById(proId)
   .then((data)=>{
-    res.render('./shop/product-detail', { data:data,docTitle:"product-detail",path:'/product-detail',isAuthenticated:req.session.isLoggedIn})
+    res.render('./shop/product-detail', { data:data,docTitle:"product-detail",path:'/product-detail'})
   })
   .catch(err=>console.log(err))
 }
@@ -31,7 +38,7 @@ const getCart = (req,res,next)=>{
   req.user.populate('cart.items.productId')
     .then(user=>{
       const cart = user.cart.items
-      res.render('./shop/cart', {product:cart, docTitle:"Cart",path:'/cart',isAuthenticated:req.session.isLoggedIn})
+      res.render('./shop/cart', {product:cart, docTitle:"Cart",path:'/cart'})
     })
     .catch(err=>console.log(err))
 }
@@ -63,7 +70,7 @@ const postDeleteCartItem = (req,res,next)=>{
 const getOrder = (req,res,next)=>{
   Order.find({"user.userId": req.user._id})
     .then(orders=>{
-      res.render('./shop/orders', {orders:orders, docTitle:"Orders",path:'/orders',isAuthenticated:req.session.isLoggedIn})
+      res.render('./shop/orders', {orders:orders, docTitle:"Orders",path:'/orders'})
     })
     .catch(err=>{
       console.log(err)
@@ -95,7 +102,7 @@ const postOrder = (req,res,next)=>{
 }
 
 const getCheckout = (req,res,next)=>{
-  res.render('./shop/chekout', { docTitle:"Checkout",path:'/checkout',isAuthenticated:req.session.isLoggedIn})
+  res.render('./shop/chekout', { docTitle:"Checkout",path:'/checkout'})
 }
 
 export {getIndex, getProduct, getOneProduct, getCart, postToCart,postDeleteCartItem,getOrder,postOrder,getCheckout}

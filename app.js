@@ -1,4 +1,5 @@
-
+import csrf from 'csurf';
+import flash from 'connect-flash';
 import express from 'express'
 import session from 'express-session';
 import connectMongodbSession from 'connect-mongodb-session';
@@ -20,6 +21,7 @@ const store = new MongoDBStore({
   collection: 'sessions'
 });
 
+const csrfProtection = csrf()
 
 
 app.set('view engine', 'ejs')
@@ -30,7 +32,6 @@ import userRouts from './routes/shop.js'
 import authRouts from './routes/auth.js'
 import get404 from './controllers/404.js'
 
-
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
@@ -39,6 +40,11 @@ app.use(session({
   saveUninitialized: false,
   store: store
 }))
+
+app.use(csrfProtection)
+
+app.use(flash())
+
 app.use((req,res,next)=>{
   if(!req.session.user){
     return next()
@@ -51,6 +57,12 @@ app.use((req,res,next)=>{
     .catch(err=>{console.log(err)})
 })
 
+app.use((req,res,next)=>{
+  res.locals.isAuthenticated = req.session.isLoggedIn
+  res.locals.csrfToken = req.csrfToken()
+  next()
+})
+
 app.use('/admin', adminRoutes)
 app.use(userRouts)
 app.use(authRouts)
@@ -59,19 +71,5 @@ app.use(get404)
 mongoose.connect(mongouri)
   .then(result=>{
     app.listen(3000)
-    User.findOne()
-      .then(user=>{
-        if(!user){
-          const user = new User({
-            username: 'AnasAS',
-            email: 'anasothman23@gmail.com',
-            cart:{
-              items: []
-            }
-          })
-          user.save()
-        }
-      })
-    
   })
   .catch(err=>{console.log(err)})

@@ -6,6 +6,9 @@
   <%- include('../includes/navigation.ejs') %>
   <main> 
       <% if(path === '/') { %>
+        <% if(loginSuccess) {%>
+          <div class="user-message"><%= loginSuccess %></div>
+        <%}%>
         <h1>My Index</h1>
       <% } else { %>
         <h1>My Products</h1>

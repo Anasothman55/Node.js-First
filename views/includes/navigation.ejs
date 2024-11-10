@@ -14,11 +14,13 @@
       <% if(isAuthenticated) {%>
         <li class="main-header__item">
           <form action="/logout" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button type="submit" class="main-header__item">Logout</button>
           </form>
         </li>
       <%} else {%>
         <li class="main-header__item"><a class="<%= path === '/login' ? 'active' : '' %>"  href="/login">Login</a></li>
+        <li class="main-header__item"><a class="<%= path === '/signup' ? 'active' : '' %>"  href="/signup">Sign up</a></li>
       <%}%>
     </ul>
   </nav>

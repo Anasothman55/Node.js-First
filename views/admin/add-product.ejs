@@ -26,6 +26,7 @@
           <label for="description">Description</label>
           <textarea  name="description" id="description"  rows="5" minlength="2"><%= product.description%></textarea>
         </div>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <button class="btn" type="submit">Edit Product</button>
         <a class="btn" href="/admin/product">Cansle</a>
       </form>
@@ -48,6 +49,7 @@
           <label for="description">Description</label>
           <textarea  name="description" id="description" rows="5" minlength="2"></textarea>
         </div>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <button class="btn" type="submit">Add Product</button>
       </form>
     <% } %>

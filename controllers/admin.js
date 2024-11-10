@@ -1,7 +1,7 @@
 import ProductSchema from '../models/product.js'
 
 const getAddProduct= (req,res,next)=>{
-  res.render('./admin/add-product', {docTitle:"Add product", path:'/admin/add-product',editing:false, isAuthenticated:req.session.isLoggedIn})
+  res.render('./admin/add-product', {docTitle:"Add product", path:'/admin/add-product',editing:false})
 }
 
 const postAddProduct = (req,res,next)=>{
@@ -41,8 +41,7 @@ const getEditProduct= (req,res,next)=>{
         docTitle:"Edit product", 
         path:'/admin/edit-product',
         product:product,
-        editing: Boolean(editMode),
-        isAuthenticated:req.session.isLoggedIn
+        editing: Boolean(editMode)
       }
     )
   })
@@ -94,7 +93,7 @@ const getAllProduct= (req,res,next)=>{
   ProductSchema.find()
     .then((product)=>{
       console.log(product)
-      res.render('./admin/product-list', {data:product, docTitle:"Product",path:'/admin/product',isAuthenticated:req.session.isLoggedIn})
+      res.render('./admin/product-list', {data:product, docTitle:"Product",path:'/admin/product'})
     })
     .catch(err=>{console.log(err)})
 }
