@@ -4,7 +4,6 @@ import user from '../models/user.js'
 
 const getIndex= (req,res,next)=>{
   const loginSuccess = req.flash('loginSuccess')[0]
-  console.log(loginSuccess)
   ProductSchema.find()
   .then(data=>{
     res.render('./shop/shop', {

@@ -10,5 +10,9 @@ router.post('/login',isAuth, loginController.postlogin)
 router.get('/signup',isAuth, loginController.getSignup);
 router.post('/signup',isAuth, loginController.postSignup);
 router.post('/logout',isNotAuth, loginController.postlogout)
+router.get('/reset', loginController.getReset);
+router.post('/reset', loginController.postReset);
+router.get('/reset/:token', loginController.getNewPassword);
+router.post('/new-password', loginController.postNewPassword);
 
 export default router;

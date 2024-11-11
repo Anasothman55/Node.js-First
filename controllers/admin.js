@@ -57,22 +57,26 @@ const postEditProduct = (req,res,next)=>{
 
   ProductSchema.findById(proId)
     .then(prod=>{
+      if(prod.userId.toString() !== req.user._id.toString()){
+        console.log(req.user._id)
+        console.log(prod.userId)
+        return res.redirect('/')
+      }
       prod.title = updateTitle
       prod.price = updatePrice
       prod.description= updateDescription
       prod.imageUrl = updateImageUrl
-      return prod.save() 
-    })
-      .then((result)=>{
+      return prod.save().then((result)=>{
         console.log("updated")
         res.redirect('/admin/product')
       })
+    })
     .catch(err=>{console.log(err)})
 }
 
 const deleteProduct = (req,res,next)=>{
   const proId = req.body.id
-  ProductSchema.findByIdAndDelete(proId)
+  ProductSchema.deleteOne({_id: proId, userId: req.user._id})
     .then(result=>{
       if (result) {
         console.log("Product deleted successfully");
@@ -90,7 +94,7 @@ const deleteProduct = (req,res,next)=>{
 }
 
 const getAllProduct= (req,res,next)=>{
-  ProductSchema.find()
+  ProductSchema.find({userId: req.user._id})
     .then((product)=>{
       console.log(product)
       res.render('./admin/product-list', {data:product, docTitle:"Product",path:'/admin/product'})
