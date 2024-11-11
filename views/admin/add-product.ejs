@@ -8,6 +8,11 @@
   <main>
     <% if(editing) { %> 
       <h1>Edit Product <%= product.title%></h1>
+      <% if(errorMessage.length > 0) {%>
+        <% errorMessage.forEach((err) => { %>
+          <div class="user-message user-message--error"><%= err.msg %></div>
+        <%})%>
+      <%}%>
       <form class="product-form" action="/admin/edit-product" method="POST">
         <input type="hidden" name="proid" id="proid" value="<%= product._id%>">
         <div class="form-control">
@@ -24,7 +29,7 @@
         </div>
         <div class="form-control">
           <label for="description">Description</label>
-          <textarea  name="description" id="description"  rows="5" minlength="2"><%= product.description%></textarea>
+          <textarea  name="description" id="description"  value="<%= product.description %>" rows="5" minlength="2"><%= product.description%></textarea>
         </div>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <button class="btn" type="submit">Edit Product</button>
@@ -32,22 +37,27 @@
       </form>
     <% } else {%> 
       <h1>Add Product</h1> 
+      <% if(errorMessage.length > 0) {%>
+        <% errorMessage.forEach((err) => { %>
+          <div class="user-message user-message--error"><%= err.msg %></div>
+        <%})%>
+      <%}%>
       <form class="product-form" action="/admin/add-product" method="POST">
         <div class="form-control">
           <label for="title">Title</label>
-          <input type="text" name="title" id="title" minlength="2">
+          <input type="text" name="title" id="title" value="<%= product.title %>" minlength="2">
         </div>
         <div class="form-control">
           <label for="imageUrl">Image Url</label>
-          <input type="text" name="imageUrl" id="imageUrl" minlength="2">
+          <input type="text" name="imageUrl" id="imageUrl" value="<%= product.imageUrl %>" minlength="2">
         </div>
         <div class="form-control">
           <label for="price">Price</label>
-          <input type="number" name="price" id="price" step="0.01">
+          <input type="number" name="price" id="price" value="<%= product.price %>" step="0.01">
         </div>
         <div class="form-control">
           <label for="description">Description</label>
-          <textarea  name="description" id="description" rows="5" minlength="2"></textarea>
+          <textarea  name="description" id="description" rows="5" value="<%= product.description %>" minlength="2"></textarea>
         </div>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <button class="btn" type="submit">Add Product</button>

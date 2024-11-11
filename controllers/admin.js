@@ -1,7 +1,13 @@
 import ProductSchema from '../models/product.js'
+import { validationResult } from 'express-validator';
 
 const getAddProduct= (req,res,next)=>{
-  res.render('./admin/add-product', {docTitle:"Add product", path:'/admin/add-product',editing:false})
+  res.render('./admin/add-product', {docTitle:"Add product", path:'/admin/add-product',errorMessage:[],editing:false,hasError: null,product:{
+    title:"",
+    price:"",
+    description:"",
+    imageUrl:""
+  },})
 }
 
 const postAddProduct = (req,res,next)=>{
@@ -9,6 +15,24 @@ const postAddProduct = (req,res,next)=>{
   const price = req.body.price
   const description = req.body.description
   const imageUrl = req.body.imageUrl
+
+  const error  = validationResult(req)
+  if(!error.isEmpty()){
+    return res.status(422).render('./admin/add-product', 
+      {
+        docTitle:"Add product", 
+        path:'/admin/add-product',
+        product:{
+          title:title,
+          price:price,
+          description:description,
+          imageUrl:imageUrl
+        },
+        editing: false,
+        hasError: true,
+        errorMessage: error.array()
+      })
+  }
   const product = new  ProductSchema({
     title:title,
     price: price,
@@ -41,7 +65,9 @@ const getEditProduct= (req,res,next)=>{
         docTitle:"Edit product", 
         path:'/admin/edit-product',
         product:product,
-        editing: Boolean(editMode)
+        editing: Boolean(editMode),
+        hasError: null,
+        errorMessage: []
       }
     )
   })
@@ -49,11 +75,31 @@ const getEditProduct= (req,res,next)=>{
 }
 
 const postEditProduct = (req,res,next)=>{
+  const editMode = req.query.edit 
   const proId =  req.body.proid
   const updateTitle = req.body.title
   const updatePrice = req.body.price
   const updateDescription = req.body.description
   const updateImageUrl = req.body.imageUrl
+  
+  const error  = validationResult(req)
+  if(!error.isEmpty()){
+    return res.status(422).render('./admin/add-product', 
+      {
+        docTitle:"Edit product", 
+        path:'/admin/edit-product',
+        product:{
+          title:updateTitle,
+          price:updatePrice,
+          description:updateDescription,
+          imageUrl:updateImageUrl,
+          _id: proId
+        },
+        editing: Boolean(editMode),
+        hasError: true,
+        errorMessage: error.array()
+      })
+  }
 
   ProductSchema.findById(proId)
     .then(prod=>{
