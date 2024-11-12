@@ -8,7 +8,6 @@ const router = express.Router();
 router.get('/add-product',isNotAuth,productControllers.getAddProduct)
 router.post('/add-product',[
   body('title').isString().isLength({min:3}).trim(),
-  body('imageUrl').isURL(),
   body('price').isFloat(),
   body('description').isLength({min:10, max:500}).trim()
 ],isNotAuth,productControllers.postAddProduct)
@@ -16,7 +15,6 @@ router.get('/edit-product/:id',isNotAuth,productControllers.getEditProduct)
 router.post('/delete-product',isNotAuth,productControllers.deleteProduct)
 router.post('/edit-product',[
   body('title').isString().isLength({min:3}).trim(),
-  body('imageUrl').isURL(),
   body('price').isFloat(),
   body('description').isLength({min:10, max:500}).trim()
 ],isNotAuth,productControllers.postEditProduct)

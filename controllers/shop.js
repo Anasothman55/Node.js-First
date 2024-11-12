@@ -1,6 +1,9 @@
 import Order from '../models/order.js'
 import ProductSchema from '../models/product.js'
 import user from '../models/user.js'
+import pdfkit from 'pdfkit'
+import fs from 'fs'
+import path from 'path'
 
 const getIndex= (req,res,next)=>{
   const loginSuccess = req.flash('loginSuccess')[0]
@@ -103,5 +106,6 @@ const postOrder = (req,res,next)=>{
 const getCheckout = (req,res,next)=>{
   res.render('./shop/chekout', { docTitle:"Checkout",path:'/checkout'})
 }
+
 
 export {getIndex, getProduct, getOneProduct, getCart, postToCart,postDeleteCartItem,getOrder,postOrder,getCheckout}

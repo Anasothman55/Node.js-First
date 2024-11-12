@@ -1,5 +1,6 @@
 import ProductSchema from '../models/product.js'
 import { validationResult } from 'express-validator';
+import { ObjectId } from 'mongodb';
 
 const getAddProduct= (req,res,next)=>{
   res.render('./admin/add-product', {docTitle:"Add product", path:'/admin/add-product',errorMessage:[],editing:false,hasError: null,product:{
@@ -11,10 +12,30 @@ const getAddProduct= (req,res,next)=>{
 }
 
 const postAddProduct = (req,res,next)=>{
+  console.log("hace") 
   const title = req.body.title
   const price = req.body.price
   const description = req.body.description
-  const imageUrl = req.body.imageUrl
+  const image = req.file
+  
+  if(!image){
+    
+    return res.status(422).render('./admin/add-product', 
+      {
+        docTitle:"Add product", 
+        path:'/admin/add-product',
+        product:{
+          title:title,
+          price:price,
+          description:description,
+        },
+        editing: false,
+        hasError: true,
+        errorMessage: ["atteched file is not an image"]
+      })   
+  }
+  
+  const imageUrl = image.path
 
   const error  = validationResult(req)
   if(!error.isEmpty()){
@@ -34,6 +55,7 @@ const postAddProduct = (req,res,next)=>{
       })
   }
   const product = new  ProductSchema({
+    //_id: new ObjectId('672c61abc1228ea3af18852d'),
     title:title,
     price: price,
     description: description,
@@ -45,7 +67,13 @@ const postAddProduct = (req,res,next)=>{
     //console.log(result)
     console.log("created product")
     res.redirect('/admin/product')
-  }).catch(err=>console.log(err))
+  }).catch(err=>{
+    //res.redirect('/500')
+    //console.log(err)
+    const error = new Error(err)
+    error.httpStatusCode = 500
+    return next(error)
+  })
 }
 
 const getEditProduct= (req,res,next)=>{

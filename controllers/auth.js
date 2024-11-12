@@ -16,6 +16,7 @@ const mailgunAuth = {
 const transport = nodemailer.createTransport(mailgunTransport(mailgunAuth));
 
 const getlogin= (req,res,next)=>{
+  const errors = validationResult(req)
   res.render('./auth/login', { docTitle:"login",path:'/login',errorMessage: errors.array(),validationError:[],oldInput: {
     email: "",
     password: "",
