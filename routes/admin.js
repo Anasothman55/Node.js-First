@@ -12,7 +12,7 @@ router.post('/add-product',[
   body('description').isLength({min:10, max:500}).trim()
 ],isNotAuth,productControllers.postAddProduct)
 router.get('/edit-product/:id',isNotAuth,productControllers.getEditProduct)
-router.post('/delete-product',isNotAuth,productControllers.deleteProduct)
+router.delete('/product/:productId',isNotAuth,productControllers.deleteProduct)
 router.post('/edit-product',[
   body('title').isString().isLength({min:3}).trim(),
   body('price').isFloat(),

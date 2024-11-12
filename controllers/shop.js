@@ -6,8 +6,11 @@ import fs from 'fs'
 import path from 'path'
 
 const getIndex= (req,res,next)=>{
+  const page = req.query.page;
   const loginSuccess = req.flash('loginSuccess')[0]
   ProductSchema.find()
+  .skip((page - 1)*2)
+  .limit(2)
   .then(data=>{
     res.render('./shop/shop', {
       data:data, 
